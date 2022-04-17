@@ -1,8 +1,10 @@
 using HomeWithYou.Models;
+using HomeWithYou.Models.EF;
 using HomeWithYou.Models.Items;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +24,9 @@ namespace HomeWithYou.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connection = this.Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

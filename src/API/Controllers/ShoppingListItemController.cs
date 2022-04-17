@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using View = HomeWithYou.Views;
 namespace HomeWithYou.API.Controllers
 {
     [ApiController]
-    [Route("api/shoppingLists")]
+    [Route("api/shoppingLists/{shoppingListId:guid}/items")]
     public class ShoppingListItemController : ControllerBase
     {
         private readonly IShoppingListRepository shoppingListRepository;
@@ -18,13 +19,24 @@ namespace HomeWithYou.API.Controllers
             this.shoppingListRepository = shoppingListRepository;
         }
 
-        [HttpPut]
-        [Route("{shoppingListId:guid}/items")]
+        [HttpPatch]
+        [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> PutProductsAsync([FromRoute] Guid shoppingListId, [FromBody][Required] View.ItemList itemList)
         {
             var result = await this.shoppingListRepository.PutProductsAsync(shoppingListId, itemList.Ids);
 
             return this.Ok(result);
+        }
+
+        [HttpPost]
+        [Route("{itemId:guid}/cross-out")]
+        public async Task<IActionResult> CrossOutProductsAsync([FromRoute] Guid shoppingListId, [FromRoute] Guid itemId)
+        {
+            //var result = await this.shoppingListRepository.PutProductsAsync(shoppingListId, itemList.Ids);
+
+            //return this.Ok(result);
+
+            return this.NoContent();
         }
     }
 }

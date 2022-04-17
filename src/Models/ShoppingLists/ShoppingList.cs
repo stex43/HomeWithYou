@@ -7,9 +7,13 @@ namespace HomeWithYou.Models.ShoppingLists
     {
         private readonly List<Guid> products = new();
 
-        public Guid Id { get; }
+        public Guid Id { get; set; }
         
-        public string Name { get; }
+        public string Name { get; set; }
+        
+        public ShoppingList()
+        {
+        }
 
         public ShoppingList(Guid id, string name)
         {

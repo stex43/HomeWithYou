@@ -2,8 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using HomeWithYou.Models.EF;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
@@ -13,16 +15,21 @@ namespace HomeWithYou.API.Controllers
     public sealed class ShoppingListController : ControllerBase
     {
         private readonly IShoppingListRepository shoppingListRepository;
+        private readonly ApplicationContext applicationContext;
 
-        public ShoppingListController(IShoppingListRepository shoppingListRepository)
+        public ShoppingListController(IShoppingListRepository shoppingListRepository, ApplicationContext applicationContext)
         {
             this.shoppingListRepository = shoppingListRepository;
+            this.applicationContext = applicationContext;
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest creationRequest)
         {
+            this.applicationContext.Add(new ShoppingList(Guid.NewGuid(), "te123123st"));
+            await this.applicationContext.SaveChangesAsync();
+            var q = await this.applicationContext.FindAsync<ShoppingList>();
             var creationInfo = new ShoppingListCreationRequest(creationRequest.Name);
             await this.shoppingListRepository.CreateAsync(creationInfo);
 
@@ -52,6 +59,7 @@ namespace HomeWithYou.API.Controllers
 
         [HttpDelete]
         [Route("{shoppingListId:guid}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid shoppingListId)
         {
             await this.shoppingListRepository.DeleteAsync(shoppingListId);
@@ -61,9 +69,10 @@ namespace HomeWithYou.API.Controllers
 
         [HttpPatch]
         [Route("{shoppingListId:guid}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid shoppingListId, [FromBody] View.ShoppingListUpdate update)
         {
-            await this.shoppingListRepository.DeleteAsync(shoppingListId);
+            await this.shoppingListRepository.UpdateAsync(shoppingListId, update.Name);
 
             return this.NoContent();
         }

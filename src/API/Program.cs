@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace HomeWithYou.API
@@ -16,10 +15,6 @@ namespace HomeWithYou.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureHostConfiguration(config =>
-                {
-                    config.AddJsonFile("hostsettings.json", optional: true);
                 });
     }
 }
