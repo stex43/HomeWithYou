@@ -4,14 +4,10 @@ namespace HomeWithYou.Models.Items
 {
     public sealed class Item
     {
-        public Item(Guid id, string name)
-        {
-            this.Id = id;
-            this.Name = name;
-        }
+        public Guid Id { get; set; }
 
-        public Guid Id { get; }
-
-        public string Name { get; }
+        public string Name { get; set; }
+        
+        public ItemType Type { get; set; }
     }
 }

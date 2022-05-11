@@ -1,7 +1,5 @@
-using HomeWithYou.Models;
 using HomeWithYou.Models.EF;
 using HomeWithYou.Models.Items;
-using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +17,7 @@ namespace HomeWithYou.API
             this.Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -33,8 +31,7 @@ namespace HomeWithYou.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWithYou", Version = "v1" });
             });
 
-            services.Add(new ServiceDescriptor(typeof(IShoppingListRepository), typeof(ShoppingListInMemoryRepository), ServiceLifetime.Singleton));
-            services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemInMemoryRepository), ServiceLifetime.Singleton));
+            //services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemInMemoryRepository), ServiceLifetime.Singleton));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.Models.EF;
+using HomeWithYou.Models.Items;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
@@ -14,26 +15,34 @@ namespace HomeWithYou.API.Controllers
     [Route("api/shoppingLists")]
     public sealed class ShoppingListController : ControllerBase
     {
-        private readonly IShoppingListRepository shoppingListRepository;
         private readonly ApplicationContext applicationContext;
 
-        public ShoppingListController(IShoppingListRepository shoppingListRepository, ApplicationContext applicationContext)
+        public ShoppingListController(ApplicationContext applicationContext)
         {
-            this.shoppingListRepository = shoppingListRepository;
             this.applicationContext = applicationContext;
         }
 
         [HttpPost]
+        [Route("")]
         [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest creationRequest)
         {
-            this.applicationContext.Add(new ShoppingList(Guid.NewGuid(), "te123123st"));
-            await this.applicationContext.SaveChangesAsync();
-            var q = await this.applicationContext.FindAsync<ShoppingList>();
-            var creationInfo = new ShoppingListCreationRequest(creationRequest.Name);
-            await this.shoppingListRepository.CreateAsync(creationInfo);
+            var shoppingList = new ShoppingList
+            {
+                Id = new Guid(),
+                Name = creationRequest.Name
+            };
+            
+            await this.applicationContext.AddAsync(shoppingList);
 
-            return this.Created("", creationInfo);
+            await this.applicationContext.SaveChangesAsync();
+
+            return this.Created("", new View.ShoppingList
+            {
+                Id = shoppingList.Id,
+                Name = shoppingList.Name
+            });
         }
 
         [HttpGet]
@@ -42,18 +51,39 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAsync([FromRoute] Guid shoppingListId)
         {
-            var productList = await this.shoppingListRepository.GetAsync(shoppingListId);
+            var shoppingList = await this.applicationContext.ShoppingLists
+                .FindAsync(shoppingListId);
 
-            if (productList == null)
+            if (shoppingList == null)
             {
-                return this.NotFound(shoppingListId);
+                return this.NotFound();
             }
 
+            await this.applicationContext.Entry(shoppingList)
+                .Collection(x => x.ShoppingListItems)
+                .LoadAsync();
+
+            foreach (var shoppingListItem in shoppingList.ShoppingListItems)
+            {
+                await this.applicationContext.Entry(shoppingListItem)
+                    .Reference(x => x.Item)
+                    .LoadAsync();
+            }
+            
             return this.Ok(new View.ShoppingList
             {
-                Id = productList.Id,
-                Name = productList.Name,
-                Products = productList.Products
+                Id = shoppingList.Id,
+                Name = shoppingList.Name,
+                Items = new View.ItemList
+                {
+                    Items = shoppingList.ShoppingListItems?.Select(
+                        x => new View.Item
+                        {
+                            Name = x.Item.Name,
+                            Amount = x.Amount,
+                            Unit = x.Unit
+                        }).ToArray()
+                }
             });
         }
 
@@ -62,17 +92,9 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid shoppingListId)
         {
-            await this.shoppingListRepository.DeleteAsync(shoppingListId);
-
-            return this.NoContent();
-        }
-
-        [HttpPatch]
-        [Route("{shoppingListId:guid}")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> UpdateAsync([FromRoute] Guid shoppingListId, [FromBody] View.ShoppingListUpdate update)
-        {
-            await this.shoppingListRepository.UpdateAsync(shoppingListId, update.Name);
+            var shoppingList = await this.applicationContext.ShoppingLists.FindAsync(shoppingListId);
+            this.applicationContext.ShoppingLists.Remove(shoppingList);
+            await this.applicationContext.SaveChangesAsync();
 
             return this.NoContent();
         }

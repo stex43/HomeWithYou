@@ -10,8 +10,10 @@ namespace HomeWithYou.Views
         public Guid Id { get; set; }
 
         [Required]
+        [MinLength(1)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
-        public IReadOnlyCollection<Guid> Products { get; set; }
+        public ItemList Items { get; set; } = ItemList.Empty();
     }
 }

@@ -1,42 +1,52 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 using System.Threading.Tasks;
-using HomeWithYou.Models.ShoppingLists;
+using HomeWithYou.Models.EF;
+using HomeWithYou.Models.Items;
+using HomeWithYou.Views;
 using Microsoft.AspNetCore.Mvc;
-using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
 {
     [ApiController]
     [Route("api/shoppingLists/{shoppingListId:guid}/items")]
-    public class ShoppingListItemController : ControllerBase
+    public sealed class ShoppingListItemController : ControllerBase
     {
-        private readonly IShoppingListRepository shoppingListRepository;
+        private readonly ApplicationContext applicationContext;
 
-        public ShoppingListItemController(IShoppingListRepository shoppingListRepository)
+        public ShoppingListItemController(ApplicationContext applicationContext)
         {
-            this.shoppingListRepository = shoppingListRepository;
-        }
-
-        [HttpPatch]
-        [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> PutProductsAsync([FromRoute] Guid shoppingListId, [FromBody][Required] View.ItemList itemList)
-        {
-            var result = await this.shoppingListRepository.PutProductsAsync(shoppingListId, itemList.Ids);
-
-            return this.Ok(result);
+            this.applicationContext = applicationContext;
         }
 
         [HttpPost]
-        [Route("{itemId:guid}/cross-out")]
-        public async Task<IActionResult> CrossOutProductsAsync([FromRoute] Guid shoppingListId, [FromRoute] Guid itemId)
+        [Route("add")]
+        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] ItemAddingRequest addingRequest)
         {
-            //var result = await this.shoppingListRepository.PutProductsAsync(shoppingListId, itemList.Ids);
+            var item = new ShoppingListItem
+            {
+                ShoppingListId = shoppingListId,
+                ItemId = addingRequest.Id,
+                Amount = addingRequest.Amount,
+                Unit = addingRequest.Unit
+            };
 
-            //return this.Ok(result);
+            await this.applicationContext.AddAsync(item);
+            await this.applicationContext.SaveChangesAsync();
 
-            return this.NoContent();
+            return this.Ok();
+        }
+        
+        [HttpPost]
+        [Route("cross-out")]
+        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromQuery] [Required] Guid itemId)
+        {
+            var item = await this.applicationContext.ShoppingListItems.FindAsync(shoppingListId, itemId);
+            
+            this.applicationContext.Remove(item);
+            await this.applicationContext.SaveChangesAsync();
+
+            return this.Ok();
         }
     }
 }
