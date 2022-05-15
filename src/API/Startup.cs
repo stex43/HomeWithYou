@@ -1,4 +1,4 @@
-using HomeWithYou.Models.EF;
+using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.Items;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,16 +22,14 @@ namespace HomeWithYou.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = this.Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
+            var connection = this.Configuration.GetConnectionString("SqlConnection");
+            services.AddDbContext<SqlContext>(options => options.UseSqlServer(connection));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWithYou", Version = "v1" });
             });
-
-            //services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemInMemoryRepository), ServiceLifetime.Singleton));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using HomeWithYou.Models.EF;
-using HomeWithYou.Models.Items;
+using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
 using View = HomeWithYou.Views;
@@ -15,11 +14,11 @@ namespace HomeWithYou.API.Controllers
     [Route("api/shoppingLists")]
     public sealed class ShoppingListController : ControllerBase
     {
-        private readonly ApplicationContext applicationContext;
+        private readonly SqlContext sqlContext;
 
-        public ShoppingListController(ApplicationContext applicationContext)
+        public ShoppingListController(SqlContext sqlContext)
         {
-            this.applicationContext = applicationContext;
+            this.sqlContext = sqlContext;
         }
 
         [HttpPost]
@@ -34,9 +33,9 @@ namespace HomeWithYou.API.Controllers
                 Name = creationRequest.Name
             };
             
-            await this.applicationContext.AddAsync(shoppingList);
+            await this.sqlContext.AddAsync(shoppingList);
 
-            await this.applicationContext.SaveChangesAsync();
+            await this.sqlContext.SaveChangesAsync();
 
             return this.Created("", new View.ShoppingList
             {
@@ -51,7 +50,7 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAsync([FromRoute] Guid shoppingListId)
         {
-            var shoppingList = await this.applicationContext.ShoppingLists
+            var shoppingList = await this.sqlContext.ShoppingLists
                 .FindAsync(shoppingListId);
 
             if (shoppingList == null)
@@ -59,13 +58,13 @@ namespace HomeWithYou.API.Controllers
                 return this.NotFound();
             }
 
-            await this.applicationContext.Entry(shoppingList)
+            await this.sqlContext.Entry(shoppingList)
                 .Collection(x => x.ShoppingListItems)
                 .LoadAsync();
 
             foreach (var shoppingListItem in shoppingList.ShoppingListItems)
             {
-                await this.applicationContext.Entry(shoppingListItem)
+                await this.sqlContext.Entry(shoppingListItem)
                     .Reference(x => x.Item)
                     .LoadAsync();
             }
@@ -92,9 +91,10 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid shoppingListId)
         {
-            var shoppingList = await this.applicationContext.ShoppingLists.FindAsync(shoppingListId);
-            this.applicationContext.ShoppingLists.Remove(shoppingList);
-            await this.applicationContext.SaveChangesAsync();
+            var shoppingList = await this.sqlContext.ShoppingLists.FindAsync(shoppingListId);
+            
+            this.sqlContext.ShoppingLists.Remove(shoppingList);
+            await this.sqlContext.SaveChangesAsync();
 
             return this.NoContent();
         }

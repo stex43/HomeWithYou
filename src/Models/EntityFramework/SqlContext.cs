@@ -3,15 +3,15 @@ using HomeWithYou.Models.Items;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeWithYou.Models.EF
+namespace HomeWithYou.Models.EntityFramework
 {
-    public sealed class ApplicationContext : DbContext
+    public sealed class SqlContext : DbContext
     {
         public DbSet<Item> Items { get; set; }
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<ShoppingListItem> ShoppingListItems { get; set; }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public SqlContext(DbContextOptions<SqlContext> options)
             : base(options)
         {
             //this.Database.EnsureDeleted();
@@ -20,6 +20,9 @@ namespace HomeWithYou.Models.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Item>()
+                .HasAlternateKey(x => x.Name);
+            
             modelBuilder.Entity<ShoppingListItem>()
                 .HasKey(nameof(ShoppingListItem.ShoppingListId), nameof(ShoppingListItem.ItemId));
             

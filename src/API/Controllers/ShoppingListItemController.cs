@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using HomeWithYou.Models.EF;
+using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.Items;
 using HomeWithYou.Views;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +12,11 @@ namespace HomeWithYou.API.Controllers
     [Route("api/shoppingLists/{shoppingListId:guid}/items")]
     public sealed class ShoppingListItemController : ControllerBase
     {
-        private readonly ApplicationContext applicationContext;
+        private readonly SqlContext sqlContext;
 
-        public ShoppingListItemController(ApplicationContext applicationContext)
+        public ShoppingListItemController(SqlContext sqlContext)
         {
-            this.applicationContext = applicationContext;
+            this.sqlContext = sqlContext;
         }
 
         [HttpPost]
@@ -31,8 +31,8 @@ namespace HomeWithYou.API.Controllers
                 Unit = addingRequest.Unit
             };
 
-            await this.applicationContext.AddAsync(item);
-            await this.applicationContext.SaveChangesAsync();
+            await this.sqlContext.AddAsync(item);
+            await this.sqlContext.SaveChangesAsync();
 
             return this.Ok();
         }
@@ -41,10 +41,10 @@ namespace HomeWithYou.API.Controllers
         [Route("cross-out")]
         public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromQuery] [Required] Guid itemId)
         {
-            var item = await this.applicationContext.ShoppingListItems.FindAsync(shoppingListId, itemId);
+            var item = await this.sqlContext.ShoppingListItems.FindAsync(shoppingListId, itemId);
             
-            this.applicationContext.Remove(item);
-            await this.applicationContext.SaveChangesAsync();
+            this.sqlContext.Remove(item);
+            await this.sqlContext.SaveChangesAsync();
 
             return this.Ok();
         }
