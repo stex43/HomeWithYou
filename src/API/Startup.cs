@@ -1,5 +1,6 @@
 using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.Items;
+using HomeWithYou.Models.Storages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,8 @@ namespace HomeWithYou.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWithYou", Version = "v1" });
             });
+            
+            services.Add(new ServiceDescriptor(typeof(IShoppingListRepository), typeof(ShoppingListRepository), ServiceLifetime.Scoped));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

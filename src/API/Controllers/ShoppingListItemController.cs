@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeWithYou.API.Controllers
 {
     [ApiController]
-    [Route("api/shoppingLists/{shoppingListId:guid}/items")]
+    [Route("api/shopping-lists/{shoppingListId:guid}/items")]
     public sealed class ShoppingListItemController : ControllerBase
     {
         private readonly SqlContext sqlContext;
@@ -42,6 +42,11 @@ namespace HomeWithYou.API.Controllers
         public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromQuery] [Required] Guid itemId)
         {
             var item = await this.sqlContext.ShoppingListItems.FindAsync(shoppingListId, itemId);
+            
+            if (item == null)
+            {
+                return this.NotFound();
+            }
             
             this.sqlContext.Remove(item);
             await this.sqlContext.SaveChangesAsync();

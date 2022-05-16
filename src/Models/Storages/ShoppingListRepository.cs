@@ -28,9 +28,27 @@ namespace HomeWithYou.Models.Storages
             return shoppingList;
         }
 
-        public ValueTask<ShoppingList> GetAsync(Guid id)
+        public async Task<ShoppingList> GetAsync(Guid id)
         {
-            return this.sqlContext.FindAsync<ShoppingList>(id);
+            var shoppingList = await this.sqlContext.FindAsync<ShoppingList>(id);
+
+            if (shoppingList == null)
+            {
+                return null;
+            }
+            
+            await this.sqlContext.Entry(shoppingList)
+                .Collection(x => x.ShoppingListItems)
+                .LoadAsync();
+
+            foreach (var shoppingListItem in shoppingList.ShoppingListItems)
+            {
+                await this.sqlContext.Entry(shoppingListItem)
+                    .Reference(x => x.Item)
+                    .LoadAsync();
+            }
+
+            return shoppingList;
         }
 
         public async Task RemoveAsync(Guid id)
@@ -48,7 +66,7 @@ namespace HomeWithYou.Models.Storages
 
         public void Dispose()
         {
-            sqlContext.Dispose();
+            this.sqlContext.Dispose();
         }
     }
 }
