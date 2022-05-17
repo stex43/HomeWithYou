@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.Items;
+using HomeWithYou.Models.Storages;
 using HomeWithYou.Views;
 using Microsoft.AspNetCore.Mvc;
+using Item = HomeWithYou.Models.Items.Item;
 
 namespace HomeWithYou.API.Controllers
 {
@@ -13,17 +15,33 @@ namespace HomeWithYou.API.Controllers
     public sealed class ShoppingListItemController : ControllerBase
     {
         private readonly SqlContext sqlContext;
+        private readonly IShoppingListRepository shoppingListRepository;
 
-        public ShoppingListItemController(SqlContext sqlContext)
+        public ShoppingListItemController(SqlContext sqlContext, IShoppingListRepository shoppingListRepository)
         {
             this.sqlContext = sqlContext;
+            this.shoppingListRepository = shoppingListRepository;
         }
 
         [HttpPost]
         [Route("add")]
         public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] ItemAddingRequest addingRequest)
         {
-            var item = new ShoppingListItem
+            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
+
+            if (shoppingList == null)
+            {
+                return this.NotFound();
+            }
+
+            var item = await this.sqlContext.FindAsync<Item>(addingRequest.Id);
+
+            if (item == null)
+            {
+                return this.NotFound();
+            }
+            
+            var shoppingListItem = new ShoppingListItem
             {
                 ShoppingListId = shoppingListId,
                 ItemId = addingRequest.Id,
@@ -31,7 +49,7 @@ namespace HomeWithYou.API.Controllers
                 Unit = addingRequest.Unit
             };
 
-            await this.sqlContext.AddAsync(item);
+            await this.sqlContext.AddAsync(shoppingListItem);
             await this.sqlContext.SaveChangesAsync();
 
             return this.Ok();
@@ -51,7 +69,7 @@ namespace HomeWithYou.API.Controllers
             this.sqlContext.Remove(item);
             await this.sqlContext.SaveChangesAsync();
 
-            return this.Ok();
+            return this.NoContent();
         }
     }
 }
