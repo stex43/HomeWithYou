@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using HomeWithYou.API.Infrastructure;
 using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.Items;
 using HomeWithYou.Models.Storages;
@@ -31,14 +32,14 @@ namespace HomeWithYou.API.Controllers
 
             if (shoppingList == null)
             {
-                return this.NotFound();
+                return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
             }
 
             var item = await this.sqlContext.FindAsync<Item>(addingRequest.Id);
 
             if (item == null)
             {
-                return this.NotFound();
+                return this.NotFoundResult("items", addingRequest.Id.ToString());
             }
             
             var shoppingListItem = new ShoppingListItem
@@ -63,7 +64,7 @@ namespace HomeWithYou.API.Controllers
             
             if (item == null)
             {
-                return this.NotFound();
+                return this.NotFoundResult("shoppingListItems", itemId.ToString());
             }
             
             this.sqlContext.Remove(item);

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using HomeWithYou.API.Infrastructure;
 using HomeWithYou.Models.ShoppingLists;
 using HomeWithYou.Models.Storages;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ namespace HomeWithYou.API.Controllers
 
             if (shoppingList == null)
             {
-                return this.NotFound();
+                return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
             }
             
             return this.Ok(new View.ShoppingList
