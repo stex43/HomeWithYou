@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.ShoppingLists;
 
 namespace HomeWithYou.Models.Storages

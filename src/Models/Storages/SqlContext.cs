@@ -3,7 +3,7 @@ using HomeWithYou.Models.Items;
 using HomeWithYou.Models.ShoppingLists;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeWithYou.Models.EntityFramework
+namespace HomeWithYou.Models.Storages
 {
     public sealed class SqlContext : DbContext
     {
@@ -31,7 +31,7 @@ namespace HomeWithYou.Models.EntityFramework
             
             var iid1 = Guid.NewGuid();
             var iid2 = Guid.NewGuid();
-            var iid3 = Guid.NewGuid();
+            var iid3 = new Guid("49fcfac9-34c2-46d6-9b4b-3be965c6f7d2");
             
             modelBuilder.Entity<ShoppingList>().HasData(
                 new ShoppingList { Id = shid1, Name = "shoppingList1" },

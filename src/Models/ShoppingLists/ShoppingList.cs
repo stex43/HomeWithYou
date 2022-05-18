@@ -10,6 +10,6 @@ namespace HomeWithYou.Models.ShoppingLists
         
         public string Name { get; set; }
         
-        public ICollection<ShoppingListItem> ShoppingListItems { get; set; }
+        public ICollection<ShoppingListItem> ShoppingListItems { get; set; } = new List<ShoppingListItem>(0);
     }
 }

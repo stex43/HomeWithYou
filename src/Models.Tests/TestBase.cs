@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using HomeWithYou.Models.EntityFramework;
 using HomeWithYou.Models.ShoppingLists;
 using HomeWithYou.Models.Storages;
 using Microsoft.EntityFrameworkCore;

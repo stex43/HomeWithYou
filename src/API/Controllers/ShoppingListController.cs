@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using HomeWithYou.API.Converters;
 using HomeWithYou.API.Infrastructure;
 using HomeWithYou.Models.ShoppingLists;
 using HomeWithYou.Models.Storages;
@@ -26,18 +26,11 @@ namespace HomeWithYou.API.Controllers
         [Route("")]
         [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest creationRequest)
+        public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest request)
         {
-            var shoppingList = await this.shoppingListRepository.CreateAsync(new ShoppingListCreationRequest
-            {
-                Name = creationRequest.Name
-            });
+            var shoppingList = await this.shoppingListRepository.CreateAsync(ShoppingListConverter.Convert(request));
 
-            return this.Created("", new View.ShoppingList
-            {
-                Id = shoppingList.Id,
-                Name = shoppingList.Name
-            });
+            return this.Created("", ShoppingListConverter.Convert(shoppingList));
         }
 
         [HttpGet]
@@ -53,21 +46,7 @@ namespace HomeWithYou.API.Controllers
                 return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
             }
             
-            return this.Ok(new View.ShoppingList
-            {
-                Id = shoppingList.Id,
-                Name = shoppingList.Name,
-                Items = new View.ItemList
-                {
-                    Items = shoppingList.ShoppingListItems?.Select(
-                        x => new View.Item
-                        {
-                            Name = x.Item.Name,
-                            Amount = x.Amount,
-                            Unit = x.Unit
-                        }).ToArray()
-                }
-            });
+            return this.Ok(ShoppingListConverter.Convert(shoppingList));
         }
 
         [HttpDelete]

@@ -14,7 +14,7 @@ namespace HomeWithYou.API.Infrastructure
             {
                 StatusCode = StatusCodes.Status404NotFound,
                 Target = $"{target}:{resourceId}",
-                Message = $"The \"{resourceId}\" of {target} is not found."
+                Message = $"The resource id={resourceId} of {target} not found."
             };
 
             return new ContentResult()
