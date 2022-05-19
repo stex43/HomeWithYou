@@ -42,7 +42,7 @@ namespace Models.Tests
                 Name = "test_list"
             };
             
-            var expected = await this.shoppingListRepository.CreateAsync(creationRequest);
+            var expected = await this.shoppingListRepository.SaveAsync(creationRequest);
 
             var actual = await this.shoppingListRepository.GetAsync(expected.Id);
 
@@ -57,7 +57,7 @@ namespace Models.Tests
                 Name = "test_list"
             };
             
-            var created = await this.shoppingListRepository.CreateAsync(creationRequest);
+            var created = await this.shoppingListRepository.SaveAsync(creationRequest);
             await this.shoppingListRepository.RemoveAsync(created.Id);
 
             var actual = await this.shoppingListRepository.GetAsync(created.Id);

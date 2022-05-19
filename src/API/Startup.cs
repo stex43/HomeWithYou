@@ -32,6 +32,7 @@ namespace HomeWithYou.API
             });
             
             services.Add(new ServiceDescriptor(typeof(IShoppingListRepository), typeof(ShoppingListRepository), ServiceLifetime.Scoped));
+            services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemRepository), ServiceLifetime.Scoped));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

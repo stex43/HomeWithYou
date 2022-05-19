@@ -28,7 +28,7 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest request)
         {
-            var shoppingList = await this.shoppingListRepository.CreateAsync(ShoppingListConverter.Convert(request));
+            var shoppingList = await this.shoppingListRepository.SaveAsync(ShoppingListConverter.Convert(request));
 
             return this.Created("", ShoppingListConverter.Convert(shoppingList));
         }

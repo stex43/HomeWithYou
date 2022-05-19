@@ -5,9 +5,8 @@ using HomeWithYou.API.Converters;
 using HomeWithYou.API.Infrastructure;
 using HomeWithYou.Models.Items;
 using HomeWithYou.Models.Storages;
-using HomeWithYou.Views;
 using Microsoft.AspNetCore.Mvc;
-using Item = HomeWithYou.Models.Items.Item;
+using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
 {
@@ -17,16 +16,21 @@ namespace HomeWithYou.API.Controllers
     {
         private readonly SqlContext sqlContext;
         private readonly IShoppingListRepository shoppingListRepository;
+        private readonly IItemRepository itemRepository;
 
-        public ShoppingListItemController(SqlContext sqlContext, IShoppingListRepository shoppingListRepository)
+        public ShoppingListItemController(
+            SqlContext sqlContext, 
+            IShoppingListRepository shoppingListRepository,
+            IItemRepository itemRepository)
         {
             this.sqlContext = sqlContext;
             this.shoppingListRepository = shoppingListRepository;
+            this.itemRepository = itemRepository;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] ItemAddingRequest request)
+        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ItemAddingRequest request)
         {
             var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
 
@@ -35,7 +39,7 @@ namespace HomeWithYou.API.Controllers
                 return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
             }
 
-            var item = await this.sqlContext.FindAsync<Item>(request.Id);
+            var item = await this.itemRepository.GetAsync(request.Id);
 
             if (item == null)
             {
@@ -58,7 +62,7 @@ namespace HomeWithYou.API.Controllers
         
         [HttpPost]
         [Route("cross-out")]
-        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromQuery] [Required] Guid itemId)
+        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ItemCrossingOutRequest request)
         {
             var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
 
@@ -67,7 +71,7 @@ namespace HomeWithYou.API.Controllers
                 return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
             }
             
-            var item = await this.sqlContext.ShoppingListItems.FindAsync(shoppingListId, itemId);
+            var item = await this.sqlContext.ShoppingListItems.FindAsync(shoppingListId, request.ItemId);
             
             if (item == null)
             {
