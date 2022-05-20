@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
 using HomeWithYou.API.Infrastructure;
-using HomeWithYou.Models.ShoppingLists;
+using HomeWithYou.API.Services;
 using HomeWithYou.Models.Storages;
 using Microsoft.AspNetCore.Mvc;
 using View = HomeWithYou.Views;
@@ -16,10 +16,12 @@ namespace HomeWithYou.API.Controllers
     public sealed class ShoppingListController : ControllerBase
     {
         private readonly IShoppingListRepository shoppingListRepository;
+        private readonly IShoppingListService shoppingListService;
 
-        public ShoppingListController(IShoppingListRepository shoppingListRepository)
+        public ShoppingListController(IShoppingListRepository shoppingListRepository, IShoppingListService shoppingListService)
         {
             this.shoppingListRepository = shoppingListRepository;
+            this.shoppingListService = shoppingListService;
         }
 
         [HttpPost]
@@ -28,7 +30,9 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest request)
         {
-            var shoppingList = await this.shoppingListRepository.SaveAsync(ShoppingListConverter.Convert(request));
+            var creationRequest = ShoppingListConverter.Convert(request);
+            
+            var shoppingList = await this.shoppingListService.CreateAsync(creationRequest);
 
             return this.Created("", ShoppingListConverter.Convert(shoppingList));
         }
@@ -39,7 +43,7 @@ namespace HomeWithYou.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAsync([FromRoute] Guid shoppingListId)
         {
-            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
+            var shoppingList = await this.shoppingListService.GetAsync(shoppingListId);
 
             if (shoppingList == null)
             {

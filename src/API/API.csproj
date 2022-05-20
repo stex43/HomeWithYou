@@ -5,6 +5,7 @@
     <AssemblyName>API</AssemblyName>
     <RootNamespace>HomeWithYou.API</RootNamespace>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

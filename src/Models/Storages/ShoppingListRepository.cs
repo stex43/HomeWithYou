@@ -27,7 +27,7 @@ namespace HomeWithYou.Models.Storages
             return shoppingList;
         }
 
-        public async Task<ShoppingList> GetAsync(Guid id)
+        public async Task<ShoppingList?> GetAsync(Guid id)
         {
             var shoppingList = await this.sqlContext.FindAsync<ShoppingList>(id);
 

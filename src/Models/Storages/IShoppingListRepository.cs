@@ -8,7 +8,7 @@ namespace HomeWithYou.Models.Storages
     {
         Task<ShoppingList> SaveAsync(ShoppingListCreationRequest request);
         
-        Task<ShoppingList> GetAsync(Guid id);
+        Task<ShoppingList?> GetAsync(Guid id);
         
         Task RemoveAsync(Guid id);
     }

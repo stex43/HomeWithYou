@@ -49,7 +49,7 @@ namespace HomeWithYou.API.Controllers
             var shoppingListItem = new ShoppingListItem
             {
                 ShoppingListId = shoppingListId,
-                ItemId = request.Id,
+                ItemId = item.Id,
                 Amount = request.Amount,
                 Unit = request.Unit
             };

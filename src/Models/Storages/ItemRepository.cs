@@ -13,7 +13,7 @@ namespace HomeWithYou.Models.Storages
             this.sqlContext = sqlContext;
         }
 
-        public async Task<Item> GetAsync(Guid id)
+        public async Task<Item?> GetAsync(Guid id)
         {
             return await this.sqlContext.FindAsync<Item>(id);
         }

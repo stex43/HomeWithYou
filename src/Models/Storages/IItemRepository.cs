@@ -6,6 +6,6 @@ namespace HomeWithYou.Models.Storages
 {
     public interface IItemRepository
     {
-        Task<Item> GetAsync(Guid id);
+        Task<Item?> GetAsync(Guid id);
     }
 }
