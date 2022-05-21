@@ -1,5 +1,4 @@
 using HomeWithYou.API.Services;
-using HomeWithYou.Models.Items;
 using HomeWithYou.Models.Storages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +34,7 @@ namespace HomeWithYou.API
             services.Add(new ServiceDescriptor(typeof(IShoppingListRepository), typeof(ShoppingListRepository), ServiceLifetime.Scoped));
             services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemRepository), ServiceLifetime.Scoped));
             services.Add(new ServiceDescriptor(typeof(IShoppingListService), typeof(ShoppingListService), ServiceLifetime.Scoped));
+            services.Add(new ServiceDescriptor(typeof(IShoppingListItemRepository), typeof(ShoppingListItemRepository), ServiceLifetime.Scoped));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

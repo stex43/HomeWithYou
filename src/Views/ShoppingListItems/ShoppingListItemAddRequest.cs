@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HomeWithYou.Views
 {
-    public sealed class ItemAddingRequest
+    public sealed class ShoppingListItemAddRequest
     {
         [Required]
-        public Guid Id { get; set; }
+        public Guid? ItemId { get; set; }
         
         [Required]
         public double Amount { get; set; }

@@ -2,7 +2,7 @@
 
 namespace HomeWithYou.Views
 {
-    public sealed class ShoppingListCreationRequest
+    public sealed class ShoppingListCreateRequest
     {
         [Required]
         [MinLength(1)]

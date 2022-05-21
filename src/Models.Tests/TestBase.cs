@@ -37,7 +37,7 @@ namespace Models.Tests
         [Test]
         public async Task CreateTest()
         {
-            var creationRequest = new ShoppingListCreationRequest
+            var creationRequest = new ShoppingListCreateRequest
             {
                 Name = "test_list"
             };
@@ -52,7 +52,7 @@ namespace Models.Tests
         [Test]
         public async Task RemoveTest()
         {
-            var creationRequest = new ShoppingListCreationRequest
+            var creationRequest = new ShoppingListCreateRequest
             {
                 Name = "test_list"
             };

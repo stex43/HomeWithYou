@@ -5,7 +5,7 @@ using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Converters
 {
-    public static class ShoppingListConverter
+    internal static class ShoppingListConverter
     {
         public static View.ShoppingList Convert(ShoppingList value)
         {
@@ -13,24 +13,24 @@ namespace HomeWithYou.API.Converters
             {
                 Id = value.Id,
                 Name = value.Name,
-                Items = new View.ItemList
+                Items = new View.ShoppingListItemList
                 {
                     Items = value.ShoppingListItems.Select(Convert).ToArray()
                 }
             };
         }
 
-        public static ShoppingListCreationRequest Convert(View.ShoppingListCreationRequest value)
+        public static ShoppingListCreateRequest Convert(View.ShoppingListCreateRequest value)
         {
-            return new ShoppingListCreationRequest
+            return new ShoppingListCreateRequest
             {
                 Name = value.Name
             };
         }
 
-        private static View.Item Convert(ShoppingListItem value)
+        private static View.ShoppingListItem Convert(ShoppingListItem value)
         {
-            return new View.Item
+            return new View.ShoppingListItem
             {
                 Name = value.Item.Name,
                 Amount = value.Amount,

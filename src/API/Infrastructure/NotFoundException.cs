@@ -2,7 +2,7 @@ using System;
 
 namespace HomeWithYou.API.Infrastructure
 {
-    public sealed class NotFoundException : Exception
+    internal sealed class NotFoundException : Exception
     {
         public string Target { get; }
 

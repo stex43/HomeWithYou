@@ -2,9 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
-using HomeWithYou.API.Infrastructure;
-using HomeWithYou.Models.Items;
-using HomeWithYou.Models.Storages;
+using HomeWithYou.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using View = HomeWithYou.Views;
 
@@ -14,72 +12,31 @@ namespace HomeWithYou.API.Controllers
     [Route("api/shopping-lists/{shoppingListId:guid}/items")]
     public sealed class ShoppingListItemController : ControllerBase
     {
-        private readonly SqlContext sqlContext;
-        private readonly IShoppingListRepository shoppingListRepository;
-        private readonly IItemRepository itemRepository;
+        private readonly IShoppingListService shoppingListService;
 
-        public ShoppingListItemController(
-            SqlContext sqlContext, 
-            IShoppingListRepository shoppingListRepository,
-            IItemRepository itemRepository)
+        public ShoppingListItemController(IShoppingListService shoppingListService)
         {
-            this.sqlContext = sqlContext;
-            this.shoppingListRepository = shoppingListRepository;
-            this.itemRepository = itemRepository;
+            this.shoppingListService = shoppingListService;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ItemAddingRequest request)
+        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ShoppingListItemAddRequest request)
         {
-            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
-
-            if (shoppingList == null)
-            {
-                return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
-            }
-
-            var item = await this.itemRepository.GetAsync(request.Id);
-
-            if (item == null)
-            {
-                return this.NotFoundResult("items", request.Id.ToString());
-            }
+            var addingRequest = ShoppingListItemConverter.Convert(request);
             
-            var shoppingListItem = new ShoppingListItem
-            {
-                ShoppingListId = shoppingListId,
-                ItemId = item.Id,
-                Amount = request.Amount,
-                Unit = request.Unit
-            };
-
-            await this.sqlContext.AddAsync(shoppingListItem);
-            await this.sqlContext.SaveChangesAsync();
+            var shoppingList = await this.shoppingListService.AddItemAsync(shoppingListId, addingRequest);
 
             return this.Ok(ShoppingListConverter.Convert(shoppingList));
         }
         
         [HttpPost]
         [Route("cross-out")]
-        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ItemCrossingOutRequest request)
+        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ShoppingListItemCrossOutRequest request)
         {
-            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
+            var crossingOutRequest = ShoppingListItemConverter.Convert(request);
 
-            if (shoppingList == null)
-            {
-                return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
-            }
-            
-            var item = await this.sqlContext.ShoppingListItems.FindAsync(shoppingListId, request.ItemId);
-            
-            if (item == null)
-            {
-                return this.Ok(ShoppingListConverter.Convert(shoppingList));
-            }
-            
-            this.sqlContext.Remove(item);
-            await this.sqlContext.SaveChangesAsync();
+            var shoppingList = await this.shoppingListService.CrossOutItemAsync(shoppingListId, crossingOutRequest);
 
             return this.Ok(ShoppingListConverter.Convert(shoppingList));
         }

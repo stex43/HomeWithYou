@@ -14,6 +14,6 @@ namespace HomeWithYou.Views
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public ItemList Items { get; set; } = ItemList.Empty();
+        public ShoppingListItemList Items { get; set; } = ShoppingListItemList.Empty();
     }
 }

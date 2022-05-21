@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
-using HomeWithYou.API.Infrastructure;
 using HomeWithYou.API.Services;
 using HomeWithYou.Models.Storages;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +27,7 @@ namespace HomeWithYou.API.Controllers
         [Route("")]
         [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreationRequest request)
+        public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreateRequest request)
         {
             var creationRequest = ShoppingListConverter.Convert(request);
             
@@ -44,11 +43,6 @@ namespace HomeWithYou.API.Controllers
         public async Task<IActionResult> GetAsync([FromRoute] Guid shoppingListId)
         {
             var shoppingList = await this.shoppingListService.GetAsync(shoppingListId);
-
-            if (shoppingList == null)
-            {
-                return this.NotFoundResult("shoppingLists", shoppingListId.ToString());
-            }
             
             return this.Ok(ShoppingListConverter.Convert(shoppingList));
         }

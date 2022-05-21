@@ -6,7 +6,7 @@ namespace HomeWithYou.Models.Storages
 {
     public interface IShoppingListRepository
     {
-        Task<ShoppingList> SaveAsync(ShoppingListCreationRequest request);
+        Task<ShoppingList> SaveAsync(ShoppingListCreateRequest request);
         
         Task<ShoppingList?> GetAsync(Guid id);
         

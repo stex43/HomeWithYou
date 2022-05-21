@@ -13,7 +13,7 @@ namespace HomeWithYou.Models.Storages
             this.sqlContext = sqlContext ?? throw new ArgumentNullException(nameof(sqlContext));
         }
 
-        public async Task<ShoppingList> SaveAsync(ShoppingListCreationRequest request)
+        public async Task<ShoppingList> SaveAsync(ShoppingListCreateRequest request)
         {
             var shoppingList = new ShoppingList
             {
