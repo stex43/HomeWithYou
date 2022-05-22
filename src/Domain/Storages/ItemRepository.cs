@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using HomeWithYou.Domain.Items;
+using JetBrains.Annotations;
 
 namespace HomeWithYou.Domain.Storages
 {
-    public sealed class ItemRepository : IItemRepository
+    [UsedImplicitly]
+    internal sealed class ItemRepository : IItemRepository
     {
         private readonly SqlContext sqlContext;
 

@@ -1,5 +1,7 @@
 using HomeWithYou.API.Services;
+using HomeWithYou.Domain;
 using HomeWithYou.Domain.Storages;
+using LightInject;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +32,13 @@ namespace HomeWithYou.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWithYou", Version = "v1" });
             });
+        }
+
+        public void ConfigureContainer(IServiceContainer container)
+        {
+            container.RegisterFrom<DomainCompositionRoot>();
             
-            services.Add(new ServiceDescriptor(typeof(IShoppingListRepository), typeof(ShoppingListRepository), ServiceLifetime.Scoped));
-            services.Add(new ServiceDescriptor(typeof(IItemRepository), typeof(ItemRepository), ServiceLifetime.Scoped));
-            services.Add(new ServiceDescriptor(typeof(IShoppingListService), typeof(ShoppingListService), ServiceLifetime.Scoped));
-            services.Add(new ServiceDescriptor(typeof(IShoppingListItemRepository), typeof(ShoppingListItemRepository), ServiceLifetime.Scoped));
+            container.Register<IShoppingListService, ShoppingListService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

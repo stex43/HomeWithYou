@@ -4,7 +4,7 @@ using HomeWithYou.Domain.ShoppingLists;
 
 namespace HomeWithYou.Domain.Storages
 {
-    public sealed class ShoppingListRepository : IShoppingListRepository, IDisposable
+    internal sealed class ShoppingListRepository : IShoppingListRepository, IDisposable
     {
         private readonly SqlContext sqlContext;
 

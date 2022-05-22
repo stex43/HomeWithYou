@@ -1,11 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using HomeWithYou.Domain.Items;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeWithYou.Domain.Storages
 {
-    public sealed class ShoppingListItemRepository : IShoppingListItemRepository
+    [UsedImplicitly]
+    internal sealed class ShoppingListItemRepository : IShoppingListItemRepository
     {
         private readonly SqlContext sqlContext;
 
