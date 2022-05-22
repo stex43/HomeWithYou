@@ -1,5 +1,5 @@
 using HomeWithYou.API.Services;
-using HomeWithYou.Models.Storages;
+using HomeWithYou.Domain.Storages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

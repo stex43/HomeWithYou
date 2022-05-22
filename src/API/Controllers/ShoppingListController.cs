@@ -4,9 +4,9 @@ using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
 using HomeWithYou.API.Services;
-using HomeWithYou.Models.Storages;
+using HomeWithYou.Client.Models;
+using HomeWithYou.Domain.Storages;
 using Microsoft.AspNetCore.Mvc;
-using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
 {
@@ -25,9 +25,9 @@ namespace HomeWithYou.API.Controllers
 
         [HttpPost]
         [Route("")]
-        [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ShoppingList), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateAsync([FromBody][Required] View.ShoppingListCreateRequest request)
+        public async Task<IActionResult> CreateAsync([FromBody][Required] ShoppingListCreateRequest request)
         {
             var creationRequest = ShoppingListConverter.Convert(request);
             
@@ -38,7 +38,7 @@ namespace HomeWithYou.API.Controllers
 
         [HttpGet]
         [Route("{shoppingListId:guid}")]
-        [ProducesResponseType(typeof(View.ShoppingList), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ShoppingList), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAsync([FromRoute] Guid shoppingListId)
         {

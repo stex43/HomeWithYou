@@ -1,6 +1,6 @@
 using System;
 using System.Text.Json;
-using HomeWithYou.Views.Errors;
+using HomeWithYou.Client.Models.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using HomeWithYou.Models.Items;
-using HomeWithYou.Models.ShoppingLists;
+using HomeWithYou.Domain.Items;
+using HomeWithYou.Domain.ShoppingLists;
 
 namespace HomeWithYou.API.Services
 {

@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using HomeWithYou.API.Infrastructure;
-using HomeWithYou.Models.Items;
-using HomeWithYou.Models.ShoppingLists;
-using HomeWithYou.Models.Storages;
+using HomeWithYou.Domain.Items;
+using HomeWithYou.Domain.ShoppingLists;
+using HomeWithYou.Domain.Storages;
 
 namespace HomeWithYou.API.Services
 {

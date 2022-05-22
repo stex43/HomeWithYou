@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
 using HomeWithYou.API.Services;
+using HomeWithYou.Client.Models;
 using Microsoft.AspNetCore.Mvc;
-using View = HomeWithYou.Views;
 
 namespace HomeWithYou.API.Controllers
 {
@@ -21,7 +21,7 @@ namespace HomeWithYou.API.Controllers
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ShoppingListItemAddRequest request)
+        public async Task<IActionResult> AddItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] ShoppingListItemAddRequest request)
         {
             var addingRequest = ShoppingListItemConverter.Convert(request);
             
@@ -32,7 +32,7 @@ namespace HomeWithYou.API.Controllers
         
         [HttpPost]
         [Route("cross-out")]
-        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] View.ShoppingListItemCrossOutRequest request)
+        public async Task<IActionResult> CrossOutItemAsync([FromRoute] Guid shoppingListId, [FromBody] [Required] ShoppingListItemCrossOutRequest request)
         {
             var crossingOutRequest = ShoppingListItemConverter.Convert(request);
 

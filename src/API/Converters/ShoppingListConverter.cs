@@ -1,26 +1,27 @@
 using System.Linq;
-using HomeWithYou.Models.Items;
-using HomeWithYou.Models.ShoppingLists;
-using View = HomeWithYou.Views;
+using HomeWithYou.Client.Models;
+using ShoppingList = HomeWithYou.Domain.ShoppingLists.ShoppingList;
+using ShoppingListCreateRequest = HomeWithYou.Domain.ShoppingLists.ShoppingListCreateRequest;
+using ShoppingListItem = HomeWithYou.Domain.Items.ShoppingListItem;
 
 namespace HomeWithYou.API.Converters
 {
     internal static class ShoppingListConverter
     {
-        public static View.ShoppingList Convert(ShoppingList value)
+        public static Client.Models.ShoppingList Convert(ShoppingList value)
         {
-            return new View.ShoppingList
+            return new Client.Models.ShoppingList
             {
                 Id = value.Id,
                 Name = value.Name,
-                Items = new View.ShoppingListItemList
+                Items = new ShoppingListItemList
                 {
                     Items = value.ShoppingListItems.Select(Convert).ToArray()
                 }
             };
         }
 
-        public static ShoppingListCreateRequest Convert(View.ShoppingListCreateRequest value)
+        public static ShoppingListCreateRequest Convert(Client.Models.ShoppingListCreateRequest value)
         {
             return new ShoppingListCreateRequest
             {
@@ -28,9 +29,9 @@ namespace HomeWithYou.API.Converters
             };
         }
 
-        private static View.ShoppingListItem Convert(ShoppingListItem value)
+        private static Client.Models.ShoppingListItem Convert(ShoppingListItem value)
         {
-            return new View.ShoppingListItem
+            return new Client.Models.ShoppingListItem
             {
                 Name = value.Item.Name,
                 Amount = value.Amount,

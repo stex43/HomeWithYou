@@ -1,11 +1,10 @@
-using HomeWithYou.Models.Items;
-using View = HomeWithYou.Views;
+using HomeWithYou.Domain.Items;
 
 namespace HomeWithYou.API.Converters
 {
     internal static class ShoppingListItemConverter
     {
-        public static ShoppingListItemAddRequest Convert(View.ShoppingListItemAddRequest value)
+        public static ShoppingListItemAddRequest Convert(Client.Models.ShoppingListItemAddRequest value)
         {
             return new ShoppingListItemAddRequest
             {
@@ -15,7 +14,7 @@ namespace HomeWithYou.API.Converters
             };
         }
         
-        public static ShoppingListItemCrossOutRequest Convert(View.ShoppingListItemCrossOutRequest value)
+        public static ShoppingListItemCrossOutRequest Convert(Client.Models.ShoppingListItemCrossOutRequest value)
         {
             return new ShoppingListItemCrossOutRequest
             {
