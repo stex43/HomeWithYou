@@ -1,10 +1,8 @@
 using HomeWithYou.API.Services;
 using HomeWithYou.Domain;
-using HomeWithYou.Domain.Storages;
 using LightInject;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,9 +22,6 @@ namespace HomeWithYou.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = this.Configuration.GetConnectionString("SqlConnection");
-            services.AddDbContext<SqlContext>(options => options.UseSqlServer(connection));
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -36,7 +31,8 @@ namespace HomeWithYou.API
 
         public void ConfigureContainer(IServiceContainer container)
         {
-            container.RegisterFrom<DomainCompositionRoot>();
+            var sqlConnection = this.Configuration.GetConnectionString("SqlConnection");
+            container.RegisterFrom(new DomainCompositionRoot(sqlConnection));
             
             container.Register<IShoppingListService, ShoppingListService>();
         }

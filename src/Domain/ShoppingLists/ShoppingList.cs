@@ -8,7 +8,7 @@ namespace HomeWithYou.Domain.ShoppingLists
     {
         public Guid Id { get; set; }
         
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         
         public ICollection<ShoppingListItem> ShoppingListItems { get; set; } = new List<ShoppingListItem>(0);
     }

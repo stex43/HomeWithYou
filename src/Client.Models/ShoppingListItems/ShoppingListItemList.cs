@@ -8,7 +8,7 @@ namespace HomeWithYou.Client.Models
         [Required]
         [MinLength(0)]
         [MaxLength(100)]
-        public ShoppingListItem[] Items { get; set; }
+        public ShoppingListItem[] Items { get; set; } = null!;
 
         public static ShoppingListItemList Empty()
         {

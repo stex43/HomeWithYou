@@ -6,11 +6,11 @@ namespace HomeWithYou.Client.Models.Errors
     {
         [JsonPropertyName("code")]
         public int StatusCode { get; set; }
-        
+
         [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
         
         [JsonPropertyName("target")]
-        public string Target { get; set; }
+        public string Target { get; set; } = null!;
     }
 }

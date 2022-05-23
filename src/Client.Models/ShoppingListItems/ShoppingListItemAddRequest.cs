@@ -14,6 +14,6 @@ namespace HomeWithYou.Client.Models
         [Required]
         [MinLength(1)]
         [MaxLength(10)]
-        public string Unit { get; set; }
+        public string Unit { get; set; } = null!;
     }
 }

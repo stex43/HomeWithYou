@@ -4,11 +4,16 @@ using HomeWithYou.API.Infrastructure;
 using HomeWithYou.Domain.Items;
 using HomeWithYou.Domain.ShoppingLists;
 using HomeWithYou.Domain.Storages;
+using JetBrains.Annotations;
 
 namespace HomeWithYou.API.Services
 {
+    [UsedImplicitly]
     internal sealed class ShoppingListService : IShoppingListService
     {
+        private const string ShoppingListsResource = "shoppingLists";
+        private const string ItemsResource = "items";
+        
         private readonly IShoppingListRepository shoppingListRepository;
         private readonly IItemRepository itemRepository;
         private readonly IShoppingListItemRepository shoppingListItemRepository;
@@ -34,7 +39,7 @@ namespace HomeWithYou.API.Services
 
             if (shoppingList == null)
             {
-                throw new NotFoundException("shoppingLists", id);
+                throw new NotFoundException(ShoppingListsResource, id);
             }
 
             return shoppingList;
@@ -46,14 +51,14 @@ namespace HomeWithYou.API.Services
 
             if (shoppingList == null)
             {
-                throw new NotFoundException("shoppingLists", shoppingListId);
+                throw new NotFoundException(ShoppingListsResource, shoppingListId);
             }
 
             var item = await this.itemRepository.GetAsync(request.ItemId);
 
             if (item == null)
             {
-                throw new NotFoundException("items", request.ItemId);
+                throw new NotFoundException(ItemsResource, request.ItemId);
             }
             
             var shoppingListItem = new ShoppingListItem

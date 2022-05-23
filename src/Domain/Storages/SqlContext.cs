@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeWithYou.Domain.Storages
 {
-    public sealed class SqlContext : DbContext
+    internal sealed class SqlContext : DbContext
     {
         public DbSet<Item> Items { get; set; }
         public DbSet<ShoppingList> ShoppingLists { get; set; }

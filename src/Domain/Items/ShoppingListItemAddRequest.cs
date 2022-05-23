@@ -8,6 +8,6 @@ namespace HomeWithYou.Domain.Items
         
         public double Amount { get; set; }
         
-        public string Unit { get; set; }
+        public string Unit { get; set; } = null!;
     }
 }

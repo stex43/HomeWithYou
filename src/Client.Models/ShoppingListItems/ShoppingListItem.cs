@@ -7,7 +7,7 @@ namespace HomeWithYou.Client.Models
         [Required]
         [MinLength(1)]
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         
         [Required]
         public double Amount { get; set; }
@@ -15,6 +15,6 @@ namespace HomeWithYou.Client.Models
         [Required]
         [MinLength(1)]
         [MaxLength(50)]
-        public string Unit { get; set; }
+        public string Unit { get; set; } = null!;
     }
 }
