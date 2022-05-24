@@ -33,7 +33,46 @@ namespace HomeWithYou.API.Services
             return this.shoppingListRepository.SaveAsync(request);
         }
 
-        public async Task<ShoppingList> GetAsync(Guid id)
+        public Task<ShoppingList> GetAsync(Guid id)
+        {
+            return this.GetShoppingListAsync(id);
+        }
+        
+        public async Task<ShoppingList> AddItemAsync(Guid shoppingListId, ShoppingListItemAddRequest request)
+        {
+            var itemId = request.ItemId;
+            var shoppingList = await this.GetShoppingListAsync(shoppingListId);
+
+            await this.CheckItemExistence(itemId);
+            
+            var shoppingListItem = new ShoppingListItem
+            {
+                ShoppingListId = shoppingListId,
+                ItemId = itemId,
+                Amount = request.Amount,
+                Unit = request.Unit
+            };
+
+            var isAdded = await this.shoppingListItemRepository.SaveAsync(shoppingListItem);
+
+            if (!isAdded)
+            {
+                throw ConflictException.ShoppingListItemAlreadyAdded(shoppingListId, itemId);
+            }
+
+            return shoppingList;
+        }
+
+        public async Task<ShoppingList> CrossOutItemAsync(Guid shoppingListId, ShoppingListItemCrossOutRequest request)
+        {
+            var shoppingList = await this.GetShoppingListAsync(shoppingListId);
+
+            await this.shoppingListItemRepository.RemoveAsync(shoppingListId, request.ItemId);
+
+            return shoppingList;
+        }
+
+        private async Task<ShoppingList> GetShoppingListAsync(Guid id)
         {
             var shoppingList = await this.shoppingListRepository.GetAsync(id);
 
@@ -44,48 +83,15 @@ namespace HomeWithYou.API.Services
 
             return shoppingList;
         }
-        
-        public async Task<ShoppingList> AddItemAsync(Guid shoppingListId, ShoppingListItemAddRequest request)
+
+        private async Task CheckItemExistence(Guid id)
         {
-            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
-
-            if (shoppingList == null)
-            {
-                throw new NotFoundException(ShoppingListsResource, shoppingListId);
-            }
-
-            var item = await this.itemRepository.GetAsync(request.ItemId);
+            var item = await this.itemRepository.GetAsync(id);
 
             if (item == null)
             {
-                throw new NotFoundException(ItemsResource, request.ItemId);
+                throw new NotFoundException(ItemsResource, id);
             }
-            
-            var shoppingListItem = new ShoppingListItem
-            {
-                ShoppingListId = shoppingListId,
-                ItemId = item.Id,
-                Amount = request.Amount,
-                Unit = request.Unit
-            };
-
-            await this.shoppingListItemRepository.SaveAsync(shoppingListItem);
-
-            return shoppingList;
-        }
-
-        public async Task<ShoppingList> CrossOutItemAsync(Guid shoppingListId, ShoppingListItemCrossOutRequest request)
-        {
-            var shoppingList = await this.shoppingListRepository.GetAsync(shoppingListId);
-
-            if (shoppingList == null)
-            {
-                throw new NotFoundException("shoppingLists", shoppingListId);
-            }
-
-            await this.shoppingListItemRepository.RemoveAsync(shoppingListId, request.ItemId);
-
-            return shoppingList;
         }
     }
 }

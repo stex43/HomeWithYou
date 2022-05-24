@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using HomeWithYou.Domain.Items;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeWithYou.Domain.Storages
 {
@@ -18,27 +17,30 @@ namespace HomeWithYou.Domain.Storages
 
         public async Task<bool> SaveAsync(ShoppingListItem shoppingListItem)
         {
-            try
-            {
-                await this.sqlContext.AddAsync(shoppingListItem);
-                await this.sqlContext.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateException)
+            var shoppingListId = shoppingListItem.ShoppingListId;
+            var itemId = shoppingListItem.ItemId;
+
+            var savedItem = await this.sqlContext.FindAsync<ShoppingListItem>(shoppingListId, itemId);
+
+            if (savedItem != null)
             {
                 return false;
             }
+
+            await this.sqlContext.AddAsync(shoppingListItem);
+            await this.sqlContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task RemoveAsync(Guid shoppingListId, Guid itemId)
         {
             var shoppingListItem = await this.sqlContext.FindAsync<ShoppingListItem>(shoppingListId, itemId);
-            
+
             if (shoppingListItem == null)
             {
                 return;
             }
-            
+
             this.sqlContext.Remove(shoppingListItem);
             await this.sqlContext.SaveChangesAsync();
         }
