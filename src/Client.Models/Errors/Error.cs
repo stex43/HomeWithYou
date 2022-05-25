@@ -11,6 +11,6 @@ namespace HomeWithYou.Client.Models.Errors
         public string Message { get; set; } = null!;
         
         [JsonPropertyName("target")]
-        public string Target { get; set; } = null!;
+        public string? Target { get; set; }
     }
 }

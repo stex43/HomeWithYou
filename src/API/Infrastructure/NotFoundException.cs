@@ -11,7 +11,7 @@ namespace HomeWithYou.API.Infrastructure
         public NotFoundException(string target, Guid resourceId) 
             : base($"The resource id={resourceId} of {target} not found.")
         {
-            this.Target = target;
+            this.Target = $"{target}:{resourceId}";
             this.ResourceId = resourceId;
         }
     }
