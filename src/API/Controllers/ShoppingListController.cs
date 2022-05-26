@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using HomeWithYou.API.Converters;
+using HomeWithYou.API.Infrastructure;
 using HomeWithYou.API.Services;
 using HomeWithYou.Client.Models;
 using HomeWithYou.Domain.Storages;
@@ -33,7 +34,7 @@ namespace HomeWithYou.API.Controllers
             
             var shoppingList = await this.shoppingListService.CreateAsync(creationRequest);
 
-            return this.Created("", ShoppingListConverter.Convert(shoppingList));
+            return this.Created(ShoppingListConverter.Convert(shoppingList));
         }
 
         [HttpGet]
